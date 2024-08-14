@@ -4,10 +4,13 @@
   import { page } from "$app/stores";
   import { is_logged_in, user_store } from "$lib";
 
-  function logout() {
-    $is_logged_in = false;
-    $user_store = null;
-    goto("/");
+  const logout = async () => {
+    const response = await fetch("/logout", { method: "POST" });
+    if (response.ok) {
+      $is_logged_in = false;
+      $user_store = null;
+      goto("/");
+    }
   }
 </script>
 
@@ -43,10 +46,10 @@
           <ul class="flex space-x-5">
             {#if $is_logged_in}
               <li><a href="/account" class="text-blue-600 hover:underline">Account</a></li>
-              <li><span class="text-gray-500">$0.00</span></li>
+              <li><span class="text-gray-500">${$user_store.balance.toFixed(2)}</span></li>
               <li><button on:click={logout} class="text-blue-600 hover:underline">Logout</button></li>
             {:else}
-              <li><a href="/login" class="text-blue-600 hover:underline">Have an account? Login!</a></li>
+              <li>Have an account? <a href="/login" class="text-blue-600"><u>Login!</u></a></li>
             {/if}
           </ul>
         </nav>
@@ -63,8 +66,8 @@
       <footer class="border-t border-dashed border-gray-200 py-4 mt-8 flex justify-between items-center">
         <nav>
           <ul class="flex space-x-4">
-            <li><a href="/about" class="text-gray-600 hover:underline">About</a></li>
-            <li><a href="/faq" class="text-gray-600 hover:underline">FAQ</a></li>
+            <li><a href="/about" class="text-blue-600"><u>About</u></a></li>
+            <li><a href="/faq" class="text-blue-600"><u>FAQ</u></a></li>
           </ul>
         </nav>
         <div class="text-sm text-gray-500">
