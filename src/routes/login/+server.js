@@ -1,5 +1,5 @@
-import { pbkdf2Sync } from "crypto";
-import { json } from "@sveltejs/kit";
+import { json } from '@sveltejs/kit';
+import { pbkdf2Sync } from 'node:crypto';
 
 export async function POST({ request, platform, cookies }) {
   const { email, password } = await request.json();

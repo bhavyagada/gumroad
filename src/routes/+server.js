@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { pbkdf2Sync, randomBytes } from 'crypto';
+import { pbkdf2Sync, randomBytes } from 'node:crypto';
 
 /** @type {import('./$types').RequestHandler} */
 export async function POST({ request, platform, cookies }) {
