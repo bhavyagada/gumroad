@@ -65,6 +65,5 @@ CREATE TABLE IF NOT EXISTS User (
 -- Create unique indexes if they don't exist
 CREATE UNIQUE INDEX IF NOT EXISTS idx_link_permalink ON Link (unique_permalink);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_file_permalink ON File (unique_permalink);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_purchase_permalink ON Purchase (unique_permalink);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_permalink ON Permalink (permalink);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_user_email ON User (email);
