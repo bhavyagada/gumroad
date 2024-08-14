@@ -57,7 +57,6 @@ CREATE TABLE IF NOT EXISTS User (
     name TEXT,
     password TEXT NOT NULL,
     salt TEXT NOT NULL,
-    auth_token TEXT NOT NULL,
     reset_hash TEXT,
     create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     balance REAL DEFAULT 0.00
