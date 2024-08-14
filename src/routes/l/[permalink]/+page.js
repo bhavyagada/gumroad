@@ -1,12 +1,11 @@
+import { error } from '@sveltejs/kit';
+
 export async function load({ params, fetch }) {
   const { permalink } = params;
   const response = await fetch(`/l/${permalink}`);
   
   if (!response.ok) {
-    return {
-      status: response.status,
-      error: new Error(`Could not load link ${permalink}`)
-    };
+    throw error(response.status, response.statusText);
   }
 
   const linkData = await response.json();
