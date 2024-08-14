@@ -1,4 +1,10 @@
-# create-svelte
+# gumroad-v1
+
+Rebuild of [gumroad.com v1](https://github.com/gumroad/gumroad-v1) using Svelte, SvelteKit, Tailwind, and Cloudflare.
+
+Primarily using Cursor + Claude 3.5 Sonnet, along with GPT, Llama, and Groq for additional help.
+
+## create-svelte
 
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
 
