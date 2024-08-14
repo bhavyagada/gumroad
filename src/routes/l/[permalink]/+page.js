@@ -1,9 +1,18 @@
-export function load({ params }) {
-  // TODO: Fetch actual data based on the permalink
+export async function load({ params, fetch }) {
+  const { permalink } = params;
+  const response = await fetch(`/l/${permalink}`);
+  
+  if (!response.ok) {
+    return {
+      status: response.status,
+      error: new Error(`Could not load link ${permalink}`)
+    };
+  }
+
+  const linkData = await response.json();
+
   return {
-    name: 'Pencil icon',
-    description: 'This is a pencil icon I worked on for about six hours.',
-    price: '1.99',
+    ...linkData,
     hide_header: true,
     hide_footer: true
   };

@@ -1,14 +1,68 @@
 <script>
+  import { page } from '$app/stores';
+  import { user_store } from '$lib';
+
   export let data;
 
   let cardNumber = '';
   let cardExpiryMonth = 'August';
   let cardExpiryYear = '2024';
   let cardSecurityCode = '';
+  let errorMessage = '';
 
-  function handleSubmit() {
-    // TODO: Implement payment logic
-    console.log('Processing payment:', { cardNumber, cardExpiryMonth, cardExpiryYear, cardSecurityCode });
+  function validateForm() {
+    // Reset error message
+    errorMessage = '';
+
+    // Validate card number (simple check for 16 digits)
+    if (!/^\d{16}$/.test(cardNumber)) {
+      errorMessage = 'Card number must be 16 digits';
+      return false;
+    }
+
+    // Validate security code (3 or 4 digits)
+    if (!/^\d{3,4}$/.test(cardSecurityCode)) {
+      errorMessage = 'Security code must be 3 or 4 digits';
+      return false;
+    }
+
+    return true;
+  }
+
+  async function handleSubmit() {
+    if (!validateForm()) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/l/${$page.params.permalink}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          permalink: $page.params.permalink,
+          cardNumber, 
+          cardExpiryMonth, 
+          cardExpiryYear, 
+          cardSecurityCode 
+        })
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // Update the user_store with the new balance
+        if (result.updatedBalance !== undefined) {
+          $user_store.balance = result.updatedBalance;
+        }
+        // window.location.href = result.url; // Redirect to the purchased content
+        window.location.href = "https://www.google.com" // Redirect to google.com for testing
+      } else {
+        errorMessage = result.error || 'An error occurred while processing your payment';
+      }
+    } catch (error) {
+      console.error('Error processing payment:', error);
+      errorMessage = 'An error occurred while processing your payment';
+    }
   }
 </script>
 
@@ -26,10 +80,13 @@
 
   <div class="bg-gray-700 text-white p-6 rounded-lg mb-6">
     <h3 class="text-xl mb-4">Pay ${data.price} to be redirected to it:</h3>
+    {#if errorMessage}
+      <p class="text-red-500 mb-4">{errorMessage}</p>
+    {/if}
     <form on:submit|preventDefault={handleSubmit} class="space-y-4">
       <div>
         <label for="cardNumber" class="block text-left mb-1">Card Number:</label>
-        <input type="text" id="cardNumber" bind:value={cardNumber} placeholder="Card number" class="w-full p-2 text-gray-700 rounded" required>
+        <input type="text" id="cardNumber" bind:value={cardNumber} placeholder="1234567890123456" class="w-full p-2 text-gray-700 rounded" required maxlength="16">
       </div>
       <div class="flex space-x-4">
         <div class="flex-1">
@@ -64,9 +121,9 @@
       </div>
       <div>
         <label for="cardSecurityCode" class="block text-left mb-1">Card Security Code:</label>
-        <input type="text" id="cardSecurityCode" bind:value={cardSecurityCode} placeholder="Security code" class="w-full p-2 text-gray-700 rounded" required>
+        <input type="text" id="cardSecurityCode" bind:value={cardSecurityCode} placeholder="123" class="w-full p-2 text-gray-700 rounded" required maxlength="4">
       </div>
-      <button type="submit" class="w-full bg-yellow-500 text-gray-700 font-bold py-2 px-4 rounded hover:bg-yellow-400">Go!</button>
+      <button type="submit" class="w-full bg-yellow-500 text-gray-700 font-bold py-2 px-4 rounded hover:bg-yellow-400">Pay!</button>
     </form>
   </div>
 
