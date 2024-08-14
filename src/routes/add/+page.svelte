@@ -80,7 +80,7 @@
       <ul class="mt-4 w-full text-center">
         {#each links as link}
           <li class="mb-2">
-            <a href="/edit/{link.permalink}" class="text-blue-600 hover:underline">{link.name}</a>
+            <a href="/edit/{link.unique_permalink}" class="text-blue-600 hover:underline">{link.name}</a>
           </li>
         {/each}
       </ul>
