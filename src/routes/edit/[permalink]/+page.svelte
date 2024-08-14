@@ -8,7 +8,6 @@
   let price = '';
   let url = '';
   let description = '';
-  let permalink = $page.params.permalink;
   let views = 0;
   let downloads = 0;
   let profit = 0;
@@ -16,6 +15,11 @@
   let loading = true;
   let error = null;
   let errorMessage = '';
+
+  $: permalink = $page.params.permalink;
+  $: if (permalink) {
+    fetchLinkDetails(permalink);
+  }
 
   async function fetchLinks() {
     try {
@@ -32,7 +36,7 @@
     }
   }
 
-  async function fetchLinkDetails() {
+  async function fetchLinkDetails(permalink) {
     try {
       const response = await fetch(`/edit/${permalink}`);
       if (!response.ok) {
@@ -55,7 +59,7 @@
     if (!$is_logged_in) {
       goto("/login");
     } else {
-      await Promise.all([fetchLinks(), fetchLinkDetails()]);
+      await fetchLinks();
     }
   });
 
@@ -70,7 +74,7 @@
       const data = await response.json();
       if (response.ok) {
         await fetchLinks();
-        await fetchLinkDetails(); // Update link details after successful update
+        await fetchLinkDetails(permalink);
       } else {
         errorMessage = data.error || 'Failed to update link';
       }
